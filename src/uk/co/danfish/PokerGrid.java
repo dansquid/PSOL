@@ -80,6 +80,9 @@ public class PokerGrid extends Activity implements DropSurface {
 		}
 		ll.addView(t);
 
+		tv = new TextView(this);
+		tv.setText("play!");
+		llv.addView(tv);
 		Button newgameButton = new Button(this);
 		newgameButton.setText("New Game");
 		newgameButton.setOnClickListener(new View.OnClickListener() {
@@ -88,9 +91,6 @@ public class PokerGrid extends Activity implements DropSurface {
 			}
 		});
 		llv.addView(newgameButton);
-		TextView tv = new TextView(this);
-		tv.setText("play!");
-		llv.addView(tv);
 		
 		source = new CardSource(this, pack);
 		ll.addView(source);
@@ -124,9 +124,9 @@ public class PokerGrid extends Activity implements DropSurface {
 			iv.setCard(c);
 		}
 		source.setPack(pack);
-		for (int i = 0; i < 23; i++) {
-			dropped(i);
-		}
+//		for (int i = 0; i < 23; i++) {
+//			dropped(i);
+//		}
 	}
 
 	@Override
@@ -171,9 +171,7 @@ public class PokerGrid extends Activity implements DropSurface {
 		source.refreshImage();
 		if (board.isFull()) {
 			Log.i("BOARD", "FINSHED.");
-			tv.setText("Last score: "+board.score());
-			newTable();
-			setupTable();
+			tv.setText("Last Score: "+board.score());
 		}
 		return true;
 	}

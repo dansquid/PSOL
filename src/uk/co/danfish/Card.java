@@ -36,4 +36,9 @@ public abstract class Card {
 			return false;
 		return this.rank()==other.rank();
 	}
+	
+	@Override
+	public String toString() {
+		return super.toString();
+	}
 }

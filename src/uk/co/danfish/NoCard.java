@@ -32,5 +32,10 @@ public class NoCard extends Card {
 	Suit suit() {
 		return null;
 	}
+	
+	@Override
+	public String toString() {
+		return "<empty>";
+	}
 
 }

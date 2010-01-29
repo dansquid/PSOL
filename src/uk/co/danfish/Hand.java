@@ -3,11 +3,19 @@ package uk.co.danfish;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import android.util.Log;
+
 import uk.co.danfish.Card.Rank;
 
 public class Hand extends ArrayList<Card> {
 
 	public int score() {
+		String hand = this.toString();
+		int res = iscore();
+		return res;
+	}
+
+	private int iscore() {
 		if (strait() & sameSuit()) {
 			if (minRankOrdinal(false) == Rank.TEN.ordinal())
 				return 30;
@@ -51,7 +59,7 @@ public class Hand extends ArrayList<Card> {
 			Rank ri = get(i).rank();
 			if (excluding == ri)
 				continue;
-			int found = 0;
+			int found = 1;
 			for (int j = i + 1; j < this.size(); j++) {
 				if (get(i).sameRankAs(get(j))) {
 					found++;
@@ -74,7 +82,7 @@ public class Hand extends ArrayList<Card> {
 			return true;
 		if (maxRankOrdinal(true) - minRankOrdinal(true) == 4)
 			return true;
-		return true;
+		return false;
 	}
 
 	public int minRankOrdinal(boolean acehigh) {
@@ -119,5 +127,16 @@ public class Hand extends ArrayList<Card> {
 				return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (Card c : this) {
+			sb.append("|");
+			sb.append(c.toString());
+		}
+		sb.append("|");
+		return sb.toString();
 	}
 }
