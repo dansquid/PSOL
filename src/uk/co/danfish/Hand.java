@@ -16,6 +16,7 @@ public class Hand extends ArrayList<Card> {
 	}
 
 	private int iscore() {
+		
 		if (strait() & sameSuit()) {
 			if (minRankOrdinal(false) == Rank.TEN.ordinal())
 				return 30;

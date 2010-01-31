@@ -96,7 +96,7 @@ public class HighScoresAdaptor {
 		ContentValues initialValues = new ContentValues();
 		initialValues.put(KEY_NAME, name);
 		initialValues.put(KEY_SCORE, score);
-		initialValues.put(KEY_DATE, date.toString());
+		initialValues.put(KEY_DATE, date.toLocaleString());
 		return mDb.insert(DATABASE_TABLE, null, initialValues);
 	}
 
@@ -117,5 +117,9 @@ public class HighScoresAdaptor {
 		}
 		return mCursor;
 
+	}
+
+	public void deleteAll() {
+		mDb.delete(DATABASE_TABLE, null, null);
 	}
 }

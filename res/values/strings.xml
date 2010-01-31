@@ -2,4 +2,5 @@
 <resources>
 	<string name="app_name">PokerSol</string>
 	<string name="menu_high_scores">High Scores</string>
+	<string name="menu_clear_high_scores">Clear High Scores</string>	
 </resources>

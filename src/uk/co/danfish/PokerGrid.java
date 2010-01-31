@@ -192,6 +192,8 @@ public class PokerGrid extends Activity implements DropSurface {
 	}
 
 	public boolean dropped(int pos) {
+		if (board.atPos(pos).isPlayable())
+			return false;
 		Card droppedCard = pack.pop();
 		slots[pos].setCard(droppedCard);
 		board.set(pos,droppedCard);
@@ -201,6 +203,7 @@ public class PokerGrid extends Activity implements DropSurface {
 		if (board.isFull()) {
 			Log.i("BOARD", "GAME FINSHED."+score);
             long id = mDbHelper.createHighScore("YOU", score, new Date());
+            showHighScores();
 		}
 		return true;
 	}
