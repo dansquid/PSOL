@@ -85,24 +85,24 @@ public class Hand extends ArrayList<Card> {
 		return false;
 	}
 
-	public int minRankOrdinal(boolean acehigh) {
+	public int minRankOrdinal(boolean acelow) {
 		int min = 13;
 		for (Card card : this) {
 			int ord = card.rank().ordinal();
-			if (acehigh && ord == 0)
-				ord = 13;
+			if (acelow && ord == 12)
+				ord = -1;
 			if (ord < min)
 				min = ord;
 		}
 		return min;
 	}
 
-	public int maxRankOrdinal(boolean acehigh) {
-		int max = 0;
+	public int maxRankOrdinal(boolean acelow) {
+		int max = -1;
 		for (Card card : this) {
 			int ord = card.rank().ordinal();
-			if (acehigh && ord == 0)
-				ord = 13;
+			if (acelow && ord == 12)
+				ord = -1;
 			if (ord > max)
 				max = ord;
 		}

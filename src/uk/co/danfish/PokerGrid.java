@@ -1,20 +1,20 @@
 package uk.co.danfish;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.Date;
 import java.util.Stack;
 
+
 import android.app.Activity;
-import android.graphics.Canvas.VertexMode;
-import android.graphics.drawable.GradientDrawable.Orientation;
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.BoringLayout;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -37,9 +37,13 @@ public class PokerGrid extends Activity implements DropSurface {
 		pack.addAll(deck);
 	}
 
+    private static final int HIGHSCORES_ID = Menu.FIRST;
+    //private static final int OTHER_ID = Menu.FIRST + 1;
+    
 	public CardSlot[] slots;
 	private CardSource source;
 	private TextView tv;
+	private HighScoresAdaptor mDbHelper;
 	public PokerGrid() {
 	}
 
@@ -48,6 +52,10 @@ public class PokerGrid extends Activity implements DropSurface {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+
+		mDbHelper = new HighScoresAdaptor(this);
+		mDbHelper.open();
+		
 		if (savedInstanceState != null) {
 			restoreState(savedInstanceState);
 		}
@@ -81,7 +89,8 @@ public class PokerGrid extends Activity implements DropSurface {
 		ll.addView(t);
 
 		tv = new TextView(this);
-		tv.setText("play!");
+		tv.setText("Tap a square to place the first card");
+		tv.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
 		llv.addView(tv);
 		Button newgameButton = new Button(this);
 		newgameButton.setText("New Game");
@@ -91,24 +100,42 @@ public class PokerGrid extends Activity implements DropSurface {
 			}
 		});
 		llv.addView(newgameButton);
-		
 		source = new CardSource(this, pack);
 		ll.addView(source);
-
 		setContentView(llv);
+	}
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        menu.add(0, HIGHSCORES_ID, 0, R.string.menu_high_scores);
+        return true;
+    }
+
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+        switch(item.getItemId()) {
+        case HIGHSCORES_ID:
+            showHighScores();
+            return true;
+        }
+        return super.onMenuItemSelected(featureId, item);
+    }
+    
+	private void showHighScores() {
+        Intent i = new Intent(this, HighScoreList.class);
+        startActivity(i);
 	}
 
 	private void restoreState(Bundle savedInstanceState) {
 		int[] boardIntArray = savedInstanceState.getIntArray("BOARD");
 		board = new Board(boardIntArray);
-		
 		Card[] pArr = CardFactory.fromInts(savedInstanceState
 				.getIntArray("PACK"));
 		pack.clear();
 		for (int i = 0; i < pArr.length; i++) {
 			pack.add(pArr[i]);
 		}
-
 	}
 
 	private void startNewGame() {
@@ -124,9 +151,9 @@ public class PokerGrid extends Activity implements DropSurface {
 			iv.setCard(c);
 		}
 		source.setPack(pack);
-//		for (int i = 0; i < 23; i++) {
-//			dropped(i);
-//		}
+		for (int i = 0; i < 23; i++) {
+			dropped(i);
+		}
 	}
 
 	@Override
@@ -169,9 +196,11 @@ public class PokerGrid extends Activity implements DropSurface {
 		slots[pos].setCard(droppedCard);
 		board.set(pos,droppedCard);
 		source.refreshImage();
+		int score = board.score();
+		tv.setText("Score: "+score);
 		if (board.isFull()) {
-			Log.i("BOARD", "FINSHED.");
-			tv.setText("Last Score: "+board.score());
+			Log.i("BOARD", "GAME FINSHED."+score);
+            long id = mDbHelper.createHighScore("YOU", score, new Date());
 		}
 		return true;
 	}
